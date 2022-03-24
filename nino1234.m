@@ -1,4 +1,4 @@
-rch 24, 2022
+% March 24, 2022
 % sglanvil@ucar.edu
 
 clear; clc; close all;
