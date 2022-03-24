@@ -6,6 +6,7 @@ module load nco
 caseName='b.e21.B1850cmip6.f09_g17.CESM2-SF-EE.115'
 histDir='/glade/scratch/cesmsf/archive/b.e21.B1850cmip6.f09_g17.CESM2-SF-EE.115/atm/hist/'
 outDir='/glade/work/sglanvil/CCR/CCRdiags_OG/out/'
+# note, add '/' to end of histDir and outDir
 # ----------------------------------------------------------
 
 cat ~nanr/diags/ccr/all_diag_fields.* | sort | uniq > fields_all # Only needs to happen once.
@@ -33,12 +34,12 @@ echo -------------------------------
 for iyear in $(eval echo "{$firstYear..$lastYear}"); do
 	monthsInYear=$(ls ${histDir}${caseName}.cam.h0.${iyear}-??.nc | wc -l)
 	if [ $monthsInYear -eq 12 ]; then
-		echo ${iyear} "has 12 months --------------> PROCESS"
+		echo $iyear "has 12 months --------------> PROCESS"
 		ncra -O -v ${varList[@]} ${histDir}${caseName}.cam.h0.${iyear}-??.nc ${outDir}${caseName}_ANN_${iyear}.nc
 	else
-		echo ${iyear} "does not have 12 months ----> SKIP"
+		echo $iyear "does not have 12 months ----> SKIP"
 	fi
 done
 
-
+ls -1 ${outDir}${caseName}_ANN_*.nc > ${outDir}ann.files
 
