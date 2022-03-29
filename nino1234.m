@@ -4,7 +4,8 @@
 clear; clc; close all;
 
 caseName='b.e21.B1850cmip6.f09_g17.CESM2-SF-EE.115';
-outDir='/glade/work/sglanvil/CCR/CCRdiags_OG/out/timeseries/';
+timeseriesDir='/glade/work/sglanvil/CCR/CCRdiags_OG/out/timeseries/';
+plotsDir='/glade/work/sglanvil/CCR/CCRdiags_OG/out/plots/';
 
 lonA=[270 210 190 160];
 lonB=[280 270 240 210];
@@ -31,20 +32,36 @@ for izone=1:4
         tline = fgetl(fileListing); 
     end
     fileSave=sprintf('%s/%s.%s.%.4d-%.4d.txt',...
-        outDir,caseName,ninoName{izone},year(1),year(end));
+        timeseriesDir,caseName,ninoName{izone},year(1),year(end));
     fileID=fopen(fileSave,'w');
     fprintf(fileID,'%4.4d %7.3f\n',[year; nino]);
     fclose(fileID);
+    
+    subplot(4,1,izone); % need to refine aspect ratio
+        box on; grid on;
+        plot(year,nino);
+        xlabel('Model Year');
+        if nanmean(nino>100)
+            ylabel('Temp (K)');
+        else
+            ylabel('Temp (^\circC)');
+        end
+        title(ninoName{izone});
 end
+plotSave=sprintf('%s/%s.nino1234',plotsDir,caseName);
+print(plotSave,'-r300','-dpng');
 
-% refine the fprintf decimal stuff to just use space delim b/n year and var
-% make plot
+% make output directories "mkdir -p" style
+% maybe make plot from JUST the *txt files (if offering user choice)
+% maybe make .mat files? along with .txt files?
 
 % ----------- FUTURE -----------
+% refine the fprintf decimal stuff to just use space delim b/n year and var
+
 % ADD CAPABILITY: ensembel members loop, cases loop, obs?
 % BATCH/PARALLEL: each diag (nino, flux, etc)
 % ALLOW: user to choose year start/end? 
-% ALLOW: user to specify recreate _ANN_ files or not? Just do plots?
+% ALLOW: user to specify recreate *_ANN_* and *txt files? or just make plots?
 % PIPE IN: caseName, outDir
 
 % another file loop option (not requiring pre-list): https://efcms.engr.utk.edu/ef105-2019-08/modules/matlab-forloop/
